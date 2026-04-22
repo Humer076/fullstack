@@ -46,8 +46,11 @@ export default function OnboardingPage() {
 
       console.log('Onboarding payload:', payload);
 
-      const backendUrl =
-        process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001/api';
+      let backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001/api';
+      if (backendUrl && !backendUrl.endsWith('/api') && !backendUrl.includes('localhost')) {
+        // Auto-correct missing /api for production URLs
+        backendUrl = `${backendUrl.replace(/\/$/, '')}/api`;
+      }
 
       // ✅ Save user in backend
       const res = await fetch(`${backendUrl}/users/sync`, {

@@ -2,8 +2,11 @@ import { useAuth, useUser } from '@clerk/nextjs';
 import axios from 'axios';
 
 // Base URL
-const BASE_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001/api';
+let BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001/api';
+if (BASE_URL && !BASE_URL.endsWith('/api') && !BASE_URL.includes('localhost')) {
+  // Auto-correct missing /api for production URLs
+  BASE_URL = `${BASE_URL.replace(/\/$/, '')}/api`;
+}
 
 // Client factory
 const createApiClient = (token, devUserId, role) => {
