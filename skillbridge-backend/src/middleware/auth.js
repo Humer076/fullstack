@@ -49,9 +49,13 @@ export const verifyAuth = async (req, res, next) => {
 
     let session;
     try {
-      session = await clerkClient.verifyToken(token);
+      session = await clerkClient.verifyToken(token, {
+        secretKey: process.env.CLERK_SECRET_KEY || process.env.CLERK_API_KEY,
+        jwtKey: process.env.CLERK_JWT_KEY
+      });
     } catch (err) {
-      return res.status(401).json({ error: 'Invalid token' });
+      console.error('Token verification error:', err);
+      return res.status(401).json({ error: 'Invalid token', details: err.message });
     }
 
     const clerkUserId = session.sub;
