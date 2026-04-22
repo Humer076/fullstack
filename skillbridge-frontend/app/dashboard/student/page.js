@@ -63,7 +63,7 @@ export default function StudentDashboard() {
             ) : sessions.length === 0 ? (
               <div className="empty-state">
                 <h3>No sessions assigned yet</h3>
-                <p>You haven't been added to any batches yet. Please wait for your batch invite link.</p>
+                <p>You haven&apos;t been added to any batches yet. Please wait for your batch invite link.</p>
               </div>
             ) : (
               <div className="grid grid-2">
