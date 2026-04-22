@@ -51,6 +51,15 @@ app.get('/health', (req, res) => {
   });
 });
 
+// ✅ Root route (so you don't get a 404 when visiting the base URL)
+app.get('/', (req, res) => {
+  return res.json({
+    message: 'SkillBridge Backend is Live! 🚀',
+    docs: 'Append /api to this URL for API routes',
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // ==================== ERROR HANDLING ====================
 app.use(notFoundHandler);
 app.use(errorHandler);
