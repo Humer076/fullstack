@@ -1,0 +1,73 @@
+name: Deploy SkillBridge
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies (backend)
+        working-directory: ./skillbridge-backend
+        run: npm install
+      - name: Lint backend
+        working-directory: ./skillbridge-backend
+        run: npm run lint --if-present
+
+  lint-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies (frontend)
+        working-directory: ./skillbridge-frontend
+        run: npm install
+      - name: Lint frontend
+        working-directory: ./skillbridge-frontend
+        run: npm run lint
+
+  # Add more jobs as needed:
+  # - test-backend
+  # - test-frontend
+  # - build-backend
+  # - build-frontend
+
+  deploy-frontend:
+    needs: lint-frontend
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy to Vercel (Frontend)
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./skillbridge-frontend
+
+  deploy-backend:
+    needs: lint-backend
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy to Railway (Backend)
+        run: |
+          # Railway deploys automatically from Git
+          # Just verify the build works
+          cd skillbridge-backend
+          npm install
+          # Add your own build step if needed
+          echo "Backend deployment configured in Railway dashboard"
