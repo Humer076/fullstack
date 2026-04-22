@@ -11,12 +11,18 @@ const PORT = process.env.PORT || 3001;
 
 // ==================== MIDDLEWARE ====================
 
-// ✅ FIXED CORS (supports both ports)
+// ✅ DYNAMIC CORS (supports localhost and Vercel deployments)
 const corsOptions = {
-  origin: [
-    'http://localhost:3000',
-    'http://localhost:3002', // ✅ your current frontend
-  ],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    // Allow any localhost port
+    // Allow any vercel.app domain
+    if (!origin || origin.startsWith('http://localhost') || origin.endsWith('.vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'x-clerk-user', 'x-role'],
