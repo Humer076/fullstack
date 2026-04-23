@@ -50,8 +50,7 @@ export const verifyAuth = async (req, res, next) => {
     let session;
     try {
       session = await clerkClient.verifyToken(token, {
-        secretKey: process.env.CLERK_SECRET_KEY || process.env.CLERK_API_KEY,
-        jwtKey: process.env.CLERK_JWT_KEY
+        secretKey: process.env.CLERK_SECRET_KEY || process.env.CLERK_API_KEY
       });
     } catch (err) {
       console.error('Token verification error:', err);
