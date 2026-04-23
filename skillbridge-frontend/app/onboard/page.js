@@ -46,8 +46,12 @@ export default function OnboardingPage() {
 
       console.log('Onboarding payload:', payload);
 
-      let backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001/api';
-      if (backendUrl && !backendUrl.endsWith('/api') && !backendUrl.includes('localhost')) {
+      let backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+      if (!backendUrl) {
+         backendUrl = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3001/api';
+      }
+      
+      if (backendUrl && !backendUrl.endsWith('/api')) {
         // Auto-correct missing /api for production URLs
         backendUrl = `${backendUrl.replace(/\/$/, '')}/api`;
       }
@@ -56,6 +60,7 @@ export default function OnboardingPage() {
       const res = await fetch(`${backendUrl}/users/sync`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(payload),
       });
 

@@ -2,9 +2,17 @@ import { useAuth, useUser } from '@clerk/nextjs';
 import axios from 'axios';
 
 // Base URL
-let BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001/api';
-if (BASE_URL && !BASE_URL.endsWith('/api') && !BASE_URL.includes('localhost')) {
-  // Auto-correct missing /api for production URLs
+let BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+if (!BASE_URL) {
+  if (process.env.NODE_ENV !== 'production') {
+    BASE_URL = 'http://localhost:3001/api';
+  } else {
+    console.error('CRITICAL: NEXT_PUBLIC_BACKEND_URL is not set!');
+    BASE_URL = '';
+  }
+}
+
+if (BASE_URL && !BASE_URL.endsWith('/api')) {
   BASE_URL = `${BASE_URL.replace(/\/$/, '')}/api`;
 }
 

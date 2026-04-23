@@ -11,16 +11,19 @@ const PORT = process.env.PORT || 3001;
 
 // ==================== MIDDLEWARE ====================
 
-// ✅ DYNAMIC CORS (supports localhost and Vercel deployments)
+// ✅ DYNAMIC CORS
+const defaultOrigins = [
+  "http://localhost:3000",
+  "https://fullstack-red-two.vercel.app"
+];
+const allowedOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : defaultOrigins;
+
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    // Allow any localhost port
-    // Allow any vercel.app domain
-    if (!origin || origin.startsWith('http://localhost') || origin.endsWith('.vercel.app')) {
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error("Not allowed by CORS"));
     }
   },
   credentials: true,
