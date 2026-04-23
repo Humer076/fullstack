@@ -24,7 +24,7 @@ export default function StudentDashboard() {
     if (response.success) {
       setSessions(response.data.sessions);
     } else {
-      toast.error('Failed to fetch sessions');
+      toast.error('Failed: ' + (response.error || 'Network/CORS error'));
     }
     setLoading(false);
   };
